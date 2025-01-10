@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Itinerary Optimizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .destination-input, .budget-input, .results, .destination-list {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .destination-item {
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .results-box {
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Travel Itinerary Optimizer</h1>
+    
+    <div class="destination-input">
+        <h2>Add Destination</h2>
+        <input type="text" id="destinationName" placeholder="Destination Name">
+        <input type="number" id="destinationCost" placeholder="Cost" min="1">
+        <input type="number" id="destinationValue" placeholder="Enjoyment Value (1-10)" min="1" max="10">
+        <button onclick="addDestination()">Add Destination</button>
+    </div>
+
+    <div class="budget-input">
+        <h2>Set Budget</h2>
+        <input type="number" id="budget" placeholder="Total Budget" min="1">
+    </div>
+
+    <div class="destination-list">
+        <h2>Added Destinations</h2>
+        <div id="destinationsList"></div>
+    </div>
+
+    <button onclick="optimizeItinerary()">Optimize Itinerary</button>
+
+    <div class="results" id="results" style="display: none;"></div>
+
+    <script>
+        let destinations = [];
+
+        function addDestination() {
+            const name = document.getElementById('destinationName').value.trim();
+            const cost = parseFloat(document.getElementById('destinationCost').value);
+            const value = parseFloat(document.getElementById('destinationValue').value);
+
+            if (!name || isNaN(cost) || cost <= 0 || isNaN(value) || value < 1 || value > 10) {
+                alert("Please provide valid destination details.");
+                return;
+            }
+
+            destinations.push({ name, cost, enjoyment_value: value });
+            updateDestinationsList();
+            clearInputs();
+        }
+
+        function clearInputs() {
+            document.getElementById('destinationName').value = '';
+            document.getElementById('destinationCost').value = '';
+            document.getElementById('destinationValue').value = '';
+        }
+
+        function updateDestinationsList() {
+            const list = document.getElementById('destinationsList');
+            list.innerHTML = destinations.map((dest, index) => `
+                <div class="destination-item">
+                    ${dest.name} - Cost: $${dest.cost.toFixed(2)} - Value: ${dest.enjoyment_value}
+                    <button onclick="removeDestination(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function removeDestination(index) {
+            if (confirm("Are you sure you want to remove this destination?")) {
+                destinations.splice(index, 1);
+                updateDestinationsList();
+            }
+        }
+        async function optimizeItinerary() {
+    const budget = parseFloat(document.getElementById('budget').value);
+
+    if (isNaN(budget) || budget <= 0 || destinations.length === 0) {
+        alert("Please add destinations and set a valid budget.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/optimize-itinerary/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') 
+            },
+            body: JSON.stringify({ destinations, budget })
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch results");
+        }
+
+        const data = await response.json();
+        displayResults(data.max_value); 
+    } catch (error) {
+        console.error('Error:', error);
+        alert("Error optimizing itinerary. Please try again later.");
+    }
+}
+
+
+    function displayResults(maxValue) {
+    if (typeof maxValue === 'undefined') {
+        alert("Error: Unable to calculate maximum enjoyment value.");
+        return;
+    }
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').innerText = `Maximum enjoyment value in trip planning: ${maxValue}`;
+}
+
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
+</body>
+</html>
