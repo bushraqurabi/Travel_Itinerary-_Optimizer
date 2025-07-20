@@ -1,23 +1,39 @@
-# Travel Itinerary Optimizer
+# 🌍 Travel Itinerary Optimizer
 
-A web application that leverages the **Knapsack algorithm** to help users plan their travel itineraries by maximizing their enjoyment value within a set budget.
+**A Django web application that helps users plan optimized travel itineraries by maximizing enjoyment within a budget, using the Knapsack algorithm.**
 
-## Features
+---
 
-- **Add and Manage Destinations**: Users can add destinations with costs and enjoyment values, and manage the list dynamically.
-- **Budget Optimization**: Uses a dynamic programming approach to calculate the optimal set of destinations within a given budget.
-- **Interactive UI**: User-friendly interface for adding destinations, setting budgets, and viewing results.
-- **Backend Integration**: Supports backend processing for itinerary optimization.
+## ✨ Overview
 
-## Repository
+Travel Itinerary Optimizer allows users to input a list of potential travel destinations, each with a **cost** and an **enjoyment score**. The system then applies the **0/1 Knapsack algorithm** to recommend the **most enjoyable combination of destinations** that fit within the user's specified budget.
 
-This project is hosted on GitHub: [ITE_BIA601_S24_HomeWork](https://github.com/bushraqurabi/ITE_BIA601_S24_HomeWork.git)
+---
 
-## Installation
+## 🚀 Features
 
-### Prerequisites
+- **➕ Add & Manage Destinations**  
+  Users can add destinations with cost and enjoyment values via a user-friendly form.
 
-Ensure you have the following installed:
-- Python 3.8 or higher
-- Django (if using the backend)
-- A modern web browser
+- **📊 Budget Optimization**  
+  A dynamic programming implementation of the **Knapsack algorithm** selects the best itinerary within budget.
+
+- **🌐 Django Backend**  
+  All business logic is handled in the Django backend, including form validation, algorithm processing, and result rendering.
+
+- **🖥️ Clean & Responsive UI**  
+  Built using Django templates, with styling for a smooth user experience.
+
+---
+
+## ⚙️ Tech Stack
+
+- **Backend:** Django (Python)
+- **Algorithm:** 0/1 Knapsack (Dynamic Programming)
+- **Frontend:** HTML, CSS, Js
+- **Database:** SQLite 
+
+---
+
+
+
